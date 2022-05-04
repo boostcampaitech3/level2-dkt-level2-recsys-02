@@ -37,15 +37,17 @@ def train(
     if not os.path.exists(weight):
         os.makedirs(weight)
 
-    if valid_data is None:
-        eids = np.arange(len(train_data["label"]))
-        eids = np.random.permutation(eids)[:1000]
-        edge, label = train_data["edge"], train_data["label"]
-        label = label.to("cpu").detach().numpy()
-        valid_data = dict(edge=edge[:, eids], label=label[eids])
+    # if valid_data is None:
+    #     eids = np.arange(len(train_data["label"]))
+    #     eids = np.random.permutation(eids)[:1000]
+    #     edge, label = train_data["edge"], train_data["label"]
+    #     label = label.to("cpu").detach().numpy()
+    #     valid_data = dict(edge=edge[:, eids], label=label[eids])
 
     logger.info(f"Training Started : n_epoch={n_epoch}")
     best_auc, best_epoch = 0, -1
+    
+    valid_data["label"] = valid_data["label"].to("cpu").detach().numpy()
     for e in range(n_epoch):
         # forward
         pred = model(train_data["edge"])
