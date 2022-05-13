@@ -81,10 +81,6 @@ def train(
                     {"model": model.state_dict(), "epoch": e + 1},
                     os.path.join(weight, f"best_model.pt"),
                 )
-    torch.save(
-        {"model": model.state_dict(), "epoch": e + 1},
-        os.path.join(weight, f"last_model.pt"),
-    )
     logger.info(f"Best Weight Confirmed : {best_epoch+1}'th epoch")
 
 

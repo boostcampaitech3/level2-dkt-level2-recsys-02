@@ -1,13 +1,12 @@
 import os
 
-import pickle
 import pandas as pd
 import torch
 
 
 def prepare_dataset(device, basepath, verbose=True, logger=None):
     data = load_data(basepath)
-    train_data, valid_data, test_data = separate_data(basepath, data)
+    train_data, valid_data, test_data = separate_data(data)
     id2index = indexing_data(data)
     train_data_proc = process_data(train_data, id2index, device)
     valid_data_proc = process_data(valid_data, id2index, device)
@@ -32,19 +31,12 @@ def load_data(basepath):
     return data
 
 
-def separate_data(basepath, data):
-    users_file_path = os.path.join(basepath, 'cv1_users.pickle')
-    with open(users_file_path,'rb') as f:
-        users = pickle.load(f)
-    train_users, test_users = users['train_users'], users['test_users']
-    
+def separate_data(data):
     test_cond = data['answerCode'] == -1
-    valid_cond1 = data['userID'].isin(test_users) == False
-    valid_cond2 = data['userID'].isin(train_users) == False
-    valid_cond3 = data['userID'] != data['userID'].shift(-1)
+    valid_cond = data['userID'] != data['userID'].shift(-1)
 
-    train_data = data[~test_cond & ~(valid_cond1 & valid_cond2 & valid_cond3)].copy()
-    valid_data = data[valid_cond1 & valid_cond2 & valid_cond3].copy()
+    train_data = data[~test_cond & ~valid_cond].copy()
+    valid_data = data[~test_cond & valid_cond].copy()
     test_data = data[test_cond].copy()
 
     return train_data, valid_data, test_data
