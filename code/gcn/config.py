@@ -7,22 +7,22 @@ class CFG:
     wandb_kwargs = dict(project="dkt-gcn")
 
     # data
-    basepath = "/opt/ml/input/data/"
+    basepath = "/opt/ml/project/data/"
     loader_verbose = True
 
     # dump
     output_dir = "./output/"
-    pred_file = "submission.csv"
+    pred_file = "layer_3_emb_512.csv"
 
     # build
-    embedding_dim = 64  # int
-    num_layers = 1  # int
+    embedding_dim = 512  # int
+    num_layers = 3  # int
     alpha = None  # Optional[Union[float, Tensor]]
     build_kwargs = {}  # other arguments
-    weight = "./weight/best_model.pt"
+    weight = f"./weight/best_model.pt"
 
     # train
-    n_epoch = 20
+    n_epoch = 2000
     learning_rate = 0.001
     weight_basepath = "./weight"
 
